@@ -92,7 +92,7 @@ export default function MarketScreen({ onTapTake }) {
           </div>
         ) : (
           <>
-            <div className="relative" style={{ width: 340, height: 440 }}>
+            <div className="relative" style={{ width: 340, height: 520 }}>
               {[...visibleTakes].reverse().map((take, reversedIdx) => {
                 const stackIndex = visibleTakes.length - 1 - reversedIdx
                 const isTop = stackIndex === 0

@@ -63,20 +63,30 @@ export default function SubmitScreen() {
     if (result.score < 30) return
     const spice = result.score >= 80 ? 3 : result.score >= 60 ? 2 : 1
     const code = isPrivate ? generateRoomCode() : null
+    const newTakeId = ++nextId
     dispatch({ type: 'ADD_TAKE', payload: {
-      id: ++nextId, text: text.trim(), spice,
-      agreePct: 50, totalPool: 0, voteCount: 0,
+      id: newTakeId, text: text.trim(), spice,
+      agreePct: 50, totalPool: 0, voteCount: 0, joinedCount: 0,
       timeLeftMinutes: 360, submittedBy: '@beef_lord',
-      isPrivate,
-      roomCode: code,
+      isPrivate, roomCode: code,
     }})
     if (isPrivate && code) {
       setRoomCode(code)
+      // simulate dark pool activity dripping in
+      setTimeout(() => dispatch({ type: 'UPDATE_TAKE', payload: { id: newTakeId, joinedCount: 2 }}), 2500)
+      setTimeout(() => dispatch({ type: 'UPDATE_TAKE', payload: { id: newTakeId, joinedCount: 4, totalPool: 150 }}), 6000)
+      setTimeout(() => dispatch({ type: 'UPDATE_TAKE', payload: { id: newTakeId, joinedCount: 5, voteCount: 1, agreePct: 60, totalPool: 350 }}), 10000)
+      setTimeout(() => dispatch({ type: 'UPDATE_TAKE', payload: { id: newTakeId, voteCount: 2, agreePct: 63, totalPool: 500 }}), 15000)
     } else {
       dispatch({
         type: 'ADD_TOAST',
         payload: { id: Date.now(), message: '🥩 Your beef is now on the market', variant: 'success', duration: 2000 },
       })
+      // simulate early market activity so Oracle has data
+      const startPct = 45 + Math.floor(Math.random() * 20)
+      setTimeout(() => dispatch({ type: 'UPDATE_TAKE', payload: { id: newTakeId, voteCount: 14, totalPool: 280, agreePct: startPct }}), 3000)
+      setTimeout(() => dispatch({ type: 'UPDATE_TAKE', payload: { id: newTakeId, voteCount: 38, totalPool: 740 }}), 7000)
+      setTimeout(() => dispatch({ type: 'UPDATE_TAKE', payload: { id: newTakeId, voteCount: 71, totalPool: 1650, agreePct: Math.min(90, startPct + Math.floor(Math.random() * 16) - 8) }}), 13000)
     }
     setText('')
     setResult({ score: 0, label: 'Too vague — give us something to argue about', verdict: 'REJECTED' })

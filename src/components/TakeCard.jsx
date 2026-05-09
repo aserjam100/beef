@@ -1,6 +1,7 @@
 import { memo, useState, useEffect } from 'react'
 import { motion, useMotionValue, useTransform, AnimatePresence } from 'framer-motion'
 import { useGame } from '../state/gameState.js'
+import { getDevilsAdvocate, getAnalystNote } from '../utils/claudeInsights.js'
 
 const SLOTS = [
   { left: 6,  top: 76,  dir: { x: -40, y: 0  } },
@@ -87,6 +88,10 @@ function formatTime(mins) {
 
 const TakeCard = memo(function TakeCard({ take, onSwipe, onTap, isTop, stackIndex }) {
   const [stake, setStake] = useState(50)
+  const [activeInsight, setActiveInsight] = useState(null)
+  const [devilText, setDevilText] = useState(null)
+  const [analystText, setAnalystText] = useState(null)
+  const [insightLoading, setInsightLoading] = useState(false)
   const x = useMotionValue(0)
   const y = useMotionValue(0)
   const rotate = useTransform(x, [-200, 200], [-15, 15])
@@ -103,6 +108,24 @@ const TakeCard = memo(function TakeCard({ take, onSwipe, onTap, isTop, stackInde
   const urgent = take.timeLeftMinutes <= 60
   const closing = take.timeLeftMinutes <= 30
 
+  async function handleInsight(type) {
+    if (activeInsight === type) { setActiveInsight(null); return }
+    setActiveInsight(type)
+    const alreadyLoaded = type === 'devil' ? devilText : analystText
+    if (alreadyLoaded) return
+    setInsightLoading(true)
+    try {
+      const text = type === 'devil' ? await getDevilsAdvocate(take) : await getAnalystNote(take)
+      if (type === 'devil') setDevilText(text || 'The crowd is smarter than you think.')
+      else setAnalystText(text || 'Analyst unavailable. Probably also betting on this.')
+    } catch {
+      if (type === 'devil') setDevilText('The crowd is smarter than you think.')
+      else setAnalystText('Analyst unavailable. Probably also betting on this.')
+    } finally {
+      setInsightLoading(false)
+    }
+  }
+
   function handleDragEnd(_, info) {
     if (info.offset.x > 100)       onSwipe('AGREE', stake)
     else if (info.offset.x < -100) onSwipe('DISAGREE', stake)
@@ -114,7 +137,7 @@ const TakeCard = memo(function TakeCard({ take, onSwipe, onTap, isTop, stackInde
       <div
         className="absolute"
         style={{
-          width: 340, height: 440, borderRadius: 24,
+          width: 340, height: 520, borderRadius: 24,
           background: dark ? '#1a1a1a' : '#fff',
           boxShadow: dark ? '0 4px 24px rgba(0,0,0,0.4)' : '0 4px 24px rgba(0,0,0,0.08)',
           transform: `translateY(${yOffset}px) scale(${scale})`,
@@ -132,7 +155,6 @@ const TakeCard = memo(function TakeCard({ take, onSwipe, onTap, isTop, stackInde
       dragElastic={0.8}
       dragTransition={{ bounceStiffness: 600, bounceDamping: 20 }}
       onDragEnd={handleDragEnd}
-      onTap={onTap}
       whileTap={{ cursor: 'grabbing' }}
     >
       <motion.div className="absolute inset-0 pointer-events-none"
@@ -144,7 +166,7 @@ const TakeCard = memo(function TakeCard({ take, onSwipe, onTap, isTop, stackInde
 
       <div
         style={{
-          width: 340, height: 440, borderRadius: 24,
+          width: 340, height: 520, borderRadius: 24,
           background: dark ? '#111' : '#fff',
           animation: urgent ? (dark ? 'urgent-glow-dark 1.4s ease-in-out infinite' : 'urgent-glow 1.4s ease-in-out infinite') : 'none',
           boxShadow: urgent ? undefined : dark
@@ -158,6 +180,7 @@ const TakeCard = memo(function TakeCard({ take, onSwipe, onTap, isTop, stackInde
         {/* AGREE stamp */}
         <motion.div style={{
           opacity: agreeOpacity, position: 'absolute', top: 24, right: 24, zIndex: 20,
+          pointerEvents: 'none',
           border: '3px solid #10b981', color: '#10b981', padding: '5px 14px',
           borderRadius: 8, fontWeight: 900, fontSize: 18, transform: 'rotate(-12deg)',
           fontFamily: "'JetBrains Mono', monospace",
@@ -169,6 +192,7 @@ const TakeCard = memo(function TakeCard({ take, onSwipe, onTap, isTop, stackInde
         {/* DISAGREE stamp */}
         <motion.div style={{
           opacity: disagreeOpacity, position: 'absolute', top: 24, left: 24, zIndex: 20,
+          pointerEvents: 'none',
           border: '3px solid #ef4444', color: '#ef4444', padding: '5px 14px',
           borderRadius: 8, fontWeight: 900, fontSize: 18, transform: 'rotate(12deg)',
           fontFamily: "'JetBrains Mono', monospace",
@@ -193,22 +217,35 @@ const TakeCard = memo(function TakeCard({ take, onSwipe, onTap, isTop, stackInde
         )}
 
         {/* header row */}
-        <div className="flex items-start justify-between mb-2" style={{ marginTop: closing ? 28 : 0 }}>
-          {dark ? (
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-sm font-bold"
-              style={{ background: 'rgba(251,191,36,0.15)', color: '#fbbf24', border: '1px solid rgba(251,191,36,0.3)', fontFamily: "'JetBrains Mono', monospace" }}
+        <div className="flex items-center justify-between mb-2" style={{ marginTop: closing ? 28 : 0 }}>
+          <div className="flex items-center gap-2">
+            {/* comments button */}
+            <button
+              onPointerDown={e => e.stopPropagation()}
+              onClick={e => { e.stopPropagation(); onTap?.() }}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-full text-sm font-bold transition-all"
+              style={{
+                background: dark ? 'rgba(255,255,255,0.08)' : '#f5f5f5',
+                color: dark ? '#666' : '#bbb',
+                fontFamily: "'JetBrains Mono', monospace",
+              }}
             >
-              🔒 DARK POOL
-            </div>
-          ) : urgent ? (
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-sm font-bold"
-              style={{ background: 'rgba(239,68,68,0.1)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.3)', fontFamily: "'JetBrains Mono', monospace", animation: 'blink-badge 1.4s ease-in-out infinite' }}
-            >
-              ⚡ {take.timeLeftMinutes}m LEFT
-            </div>
-          ) : (
-            <div />
-          )}
+              💬
+            </button>
+            {dark ? (
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-sm font-bold"
+                style={{ background: 'rgba(251,191,36,0.15)', color: '#fbbf24', border: '1px solid rgba(251,191,36,0.3)', fontFamily: "'JetBrains Mono', monospace" }}
+              >
+                🔒 DARK POOL
+              </div>
+            ) : urgent ? (
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-sm font-bold"
+                style={{ background: 'rgba(239,68,68,0.1)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.3)', fontFamily: "'JetBrains Mono', monospace", animation: 'blink-badge 1.4s ease-in-out infinite' }}
+              >
+                ⚡ {take.timeLeftMinutes}m LEFT
+              </div>
+            ) : null}
+          </div>
           <div className="flex items-center gap-1 px-2.5 py-1 rounded-full text-sm font-bold"
             style={{
               background: spice.color + (dark ? '25' : '15'),
@@ -222,14 +259,40 @@ const TakeCard = memo(function TakeCard({ take, onSwipe, onTap, isTop, stackInde
           </div>
         </div>
 
-        {/* take text */}
-        <div className="flex-1 flex items-center justify-center px-2">
+        {/* take text + insight overlay */}
+        <div className="flex-1 relative flex items-center justify-center px-2" style={{ minHeight: 0 }}>
           <p
             className="font-bold text-center leading-tight"
             style={{ color: dark ? '#fff' : '#111', fontSize: take.text.length > 50 ? 22 : take.text.length > 35 ? 26 : 30 }}
           >
             "{take.text}"
           </p>
+          <AnimatePresence>
+            {activeInsight && (
+              <motion.div
+                key={activeInsight}
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.96 }}
+                transition={{ duration: 0.2 }}
+                className="absolute inset-0 flex flex-col rounded-2xl p-4 overflow-y-auto"
+                style={{
+                  background: activeInsight === 'devil' ? 'rgba(185,28,28,0.97)' : 'rgba(30,64,175,0.97)',
+                  zIndex: 16,
+                }}
+              >
+                <p className="text-xs font-black mb-2 tracking-widest" style={{ color: 'rgba(255,255,255,0.5)', fontFamily: "'JetBrains Mono', monospace" }}>
+                  {activeInsight === 'devil' ? '😈 SATAN SPEAKS' : '📟 BEEF ORACLE'}
+                </p>
+                <p className="text-sm font-semibold leading-snug" style={{ color: '#fff', fontFamily: 'Inter, sans-serif' }}>
+                  {insightLoading
+                    ? (activeInsight === 'devil' ? 'Cooking up a counter...' : 'Reading the market...')
+                    : (activeInsight === 'devil' ? devilText : analystText)
+                  }
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* odds bar */}
@@ -253,12 +316,33 @@ const TakeCard = memo(function TakeCard({ take, onSwipe, onTap, isTop, stackInde
         {/* stats */}
         <p className="text-center text-sm mb-3" style={{ color: dark ? '#555' : '#aaa', fontFamily: "'JetBrains Mono', monospace" }}>
           {dark
-            ? `🔒 INVITE ONLY · ${take.voteCount} in the pool · ${formatTime(take.timeLeftMinutes)}`
+            ? `🔒 ${take.joinedCount || 0} joined · ${take.voteCount} voted · $${(take.totalPool || 0).toLocaleString()} staked · ${formatTime(take.timeLeftMinutes)}`
             : urgent
               ? `$${take.totalPool.toLocaleString()} pool · ${take.voteCount.toLocaleString()} votes`
               : `$${take.totalPool.toLocaleString()} pool · ${take.voteCount.toLocaleString()} votes · ${formatTime(take.timeLeftMinutes)}`
           }
         </p>
+
+        {/* insight buttons */}
+        <div className="flex gap-2 mb-3">
+          {[['devil', '😈 SATAN'], ['analyst', '📟 BEEF ORACLE']].map(([type, label]) => (
+            <button
+              key={type}
+              onPointerDown={e => e.stopPropagation()}
+              onClick={e => { e.stopPropagation(); handleInsight(type) }}
+              className="flex-1 py-1.5 rounded-xl text-xs font-black transition-all"
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                background: activeInsight === type
+                  ? (type === 'devil' ? '#b91c1c' : '#1d4ed8')
+                  : (dark ? '#1f1f1f' : '#f5f5f5'),
+                color: activeInsight === type ? '#fff' : (dark ? '#444' : '#bbb'),
+              }}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
 
         {/* stake selector */}
         <div className="flex gap-2 justify-center">

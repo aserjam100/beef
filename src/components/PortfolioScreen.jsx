@@ -160,7 +160,7 @@ export default function PortfolioScreen() {
       {/* list */}
       <div className="flex-1 overflow-y-auto pb-4">
         {tab === 'open'
-          ? state.openPositions.map((pos, i) => <OpenRow key={i} pos={pos} />)
+          ? [...state.openPositions].reverse().map((pos, i) => <OpenRow key={i} pos={pos} />)
           : state.resolvedHistory.map(item => <HistoryRow key={item.id} item={item} />)
         }
       </div>
