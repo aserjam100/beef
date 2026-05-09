@@ -12,6 +12,8 @@ import SubmitScreen from './components/SubmitScreen.jsx'
 import CommentsModal from './components/CommentsModal.jsx'
 import ResolutionScreen from './components/ResolutionScreen.jsx'
 
+const resolutionsFired = { win: false, loss: false }
+
 function AppShell() {
   const [activeTab, setActiveTab] = useState('market')
   const [selectedTake, setSelectedTake] = useState(null)
@@ -33,20 +35,15 @@ function AppShell() {
   }, [dispatch])
 
   useEffect(() => {
-    const win = setTimeout(() => setResolution({
-      outcome: 'WIN',
-      text: "Remote work made everyone worse at their actual jobs",
-      side: 'DISAGREE',
-      stake: 75,
-      payout: 198,
-    }), 20000)
-    const loss = setTimeout(() => setResolution({
-      outcome: 'LOSS',
-      text: "College is a scam for 80% of the people who go",
-      side: 'AGREE',
-      stake: 150,
-      payout: 0,
-    }), 45000)
+    if (resolutionsFired.win && resolutionsFired.loss) return
+    const win = !resolutionsFired.win ? setTimeout(() => {
+      resolutionsFired.win = true
+      setResolution({ outcome: 'WIN', text: "Remote work made everyone worse at their actual jobs", side: 'DISAGREE', stake: 75, payout: 198 })
+    }, 20000) : null
+    const loss = !resolutionsFired.loss ? setTimeout(() => {
+      resolutionsFired.loss = true
+      setResolution({ outcome: 'LOSS', text: "College is a scam for 80% of the people who go", side: 'AGREE', stake: 150, payout: 0 })
+    }, 45000) : null
     return () => { clearTimeout(win); clearTimeout(loss) }
   }, [])
 

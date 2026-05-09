@@ -39,6 +39,21 @@ export const activeTakes = [
   { id: 38, text: "If your personality requires alcohol to emerge, it's not your personality",    spice: 3, agreePct: 58, totalPool: 2900,  voteCount: 643,  timeLeftMinutes: 110, submittedBy: '@cilantro_truther' },
   { id: 39, text: "Productivity culture is just capitalism making you feel guilty for existing",  spice: 3, agreePct: 76, totalPool: 4400,  voteCount: 1021, timeLeftMinutes: 54,  submittedBy: '@touch_grass_2026' },
   { id: 40, text: "People who 'work best under pressure' just have poor planning skills",         spice: 2, agreePct: 61, totalPool: 1800,  voteCount: 398,  timeLeftMinutes: 140, submittedBy: '@market_maker_mike'},
+  { id: 41, text: "Traveling doesn't make you interesting, it just makes you expensive",          spice: 2, agreePct: 43, totalPool: 2600,  voteCount: 581,  timeLeftMinutes: 77,  submittedBy: '@hot_take_haver'    },
+  { id: 42, text: "Reading fiction is just a socially acceptable way to avoid your real life",    spice: 3, agreePct: 37, totalPool: 3100,  voteCount: 702,  timeLeftMinutes: 93,  submittedBy: '@bear_market_betty' },
+  { id: 43, text: "Parents who homeschool are doing it for themselves not their kids",            spice: 3, agreePct: 54, totalPool: 4800,  voteCount: 1098, timeLeftMinutes: 29,  submittedBy: '@cilantro_truther'  },
+  { id: 44, text: "Most people who say they have anxiety just don't want to do things",           spice: 3, agreePct: 31, totalPool: 6200,  voteCount: 1442, timeLeftMinutes: 18,  submittedBy: '@bet_against_me'    },
+  { id: 45, text: "Marriage is a financial contract that people dress up in romance to feel better about it", spice: 3, agreePct: 58, totalPool: 5100, voteCount: 1178, timeLeftMinutes: 41, submittedBy: '@short_seller_99' },
+  { id: 46, text: "Unpopular opinion: most people are not capable of critical thinking",          spice: 3, agreePct: 62, totalPool: 3400,  voteCount: 768,  timeLeftMinutes: 66,  submittedBy: '@regret_minimizer'  },
+  { id: 47, text: "Kids who grew up poor have a better work ethic than kids who didn't and it shows", spice: 3, agreePct: 55, totalPool: 4900, voteCount: 1134, timeLeftMinutes: 52, submittedBy: '@vibes_only'      },
+  { id: 48, text: "Astrology is the new religion and equally made up",                            spice: 2, agreePct: 66, totalPool: 2200,  voteCount: 487,  timeLeftMinutes: 112, submittedBy: '@market_maker_mike' },
+  { id: 49, text: "If you need a vision board you probably don't want it that badly",             spice: 2, agreePct: 57, totalPool: 1500,  voteCount: 334,  timeLeftMinutes: 190, submittedBy: '@touch_grass_2026'  },
+  { id: 50, text: "Millennials didn't kill industries, industries priced millennials out",         spice: 3, agreePct: 82, totalPool: 3700,  voteCount: 856,  timeLeftMinutes: 61,  submittedBy: '@spicy_takes_only'  },
+  { id: 51, text: "Most people who claim to be introverts are just bad at socializing",           spice: 3, agreePct: 44, totalPool: 4300,  voteCount: 989,  timeLeftMinutes: 36,  submittedBy: '@hot_dog_sandwich'  },
+  { id: 52, text: "Unpaid internships are just classism with a résumé line",                      spice: 3, agreePct: 88, totalPool: 2900,  voteCount: 633,  timeLeftMinutes: 83,  submittedBy: '@bear_market_betty' },
+  { id: 53, text: "People who brag about not watching TV are the same people who watch 6 hours of YouTube", spice: 2, agreePct: 78, totalPool: 1700, voteCount: 371, timeLeftMinutes: 230, submittedBy: '@cilantro_truther' },
+  { id: 54, text: "Veganism is a privilege that pretends it isn't",                               spice: 3, agreePct: 46, totalPool: 5400,  voteCount: 1256, timeLeftMinutes: 23,  submittedBy: '@hot_take_haver'    },
+  { id: 55, text: "The friend who always plays devil's advocate is just the contrarian nobody challenged growing up", spice: 2, agreePct: 71, totalPool: 1200, voteCount: 264, timeLeftMinutes: 310, submittedBy: '@regret_minimizer' },
 ]
 
 export const resolvedTakes = [

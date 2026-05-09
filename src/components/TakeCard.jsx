@@ -12,9 +12,25 @@ const SLOTS = [
   { right: 6, top: 196, dir: { x: 30,  y: 10 } },
 ]
 
+const GENERIC_REACTIONS = [
+  { username: '@anon_beef', side: 'AGREE',    text: 'umm hmm 👀' },
+  { username: '@market_watcher', side: 'AGREE',    text: 'I knew it 🔥' },
+  { username: '@hotpocket99', side: 'AGREE',    text: 'called it from day one' },
+  { username: '@lurker_mode', side: 'AGREE',    text: 'finally someone said it' },
+  { username: '@cold_takes', side: 'DISAGREE', text: 'absolutely not lmao' },
+  { username: '@contrarian_', side: 'DISAGREE', text: 'nah this is cooked' },
+  { username: '@ratio_lord', side: 'DISAGREE', text: 'hard disagree bestie' },
+  { username: '@beef_skeptic', side: 'AGREE',    text: 'this one got me thinking' },
+  { username: '@just_vibes', side: 'AGREE',    text: 'sending this to everyone' },
+  { username: '@devil_anon', side: 'DISAGREE', text: 'who let this person cook' },
+  { username: '@based_dept', side: 'AGREE',    text: 'BASED 💯' },
+  { username: '@scepticpill', side: 'DISAGREE', text: 'the delusion is real' },
+]
+
 function FloatingComments({ takeId }) {
   const { state } = useGame()
-  const comments = state.comments[takeId] || []
+  const seeded = state.comments[takeId] || []
+  const comments = seeded.length ? seeded : GENERIC_REACTIONS
   const [active, setActive] = useState([])
 
   useEffect(() => {
@@ -52,10 +68,10 @@ function FloatingComments({ takeId }) {
               background: comment.side === 'AGREE'
                 ? 'rgba(16,185,129,0.92)'
                 : 'rgba(239,68,68,0.92)',
-              color: '#fff',
+              color: '#111',
               borderRadius: 10,
               padding: '5px 9px',
-              boxShadow: '0 2px 10px rgba(0,0,0,0.18)',
+              boxShadow: '0 2px 10px rgba(0,0,0,0.12)',
             }}
           >
             <p style={{ fontSize: 10, fontFamily: "'JetBrains Mono', monospace", fontWeight: 700, opacity: 0.8, marginBottom: 1 }}>
