@@ -1,61 +1,32 @@
 # 🥩 Beef Market
 
-**Tinder for prediction markets.** Swipe on hot takes, bet real (fake) money on whether the internet agrees, and watch the odds move in real time.
+**Tinder meets prediction market.** Swipe right to agree, swipe left to disagree — and put your money where your mouth is.
 
-Built at a hackathon in one session. Fully fake backend, entirely too much personality.
-
----
-
-## What it is
-
-Beef Market is a prediction market where the assets are spicy opinions.
-
-- **Swipe right (AGREE)** or **left (DISAGREE)** on takes like *"AI is mid and we're all pretending otherwise"*
-- Stake between $10–$500 on your conviction
-- Watch live odds shift as the crowd votes
-- Cash out when the market resolves
-
-It's Kalshi meets Polymarket meets the group chat that will not stop arguing.
+Drop nuclear takes online. Bet on them. Watch the crowd decide who was right. Test your relationships and friendships with dark pools.
 
 ---
 
-## Core features
+## What is it
 
-**🃏 Swipe market** — Tinder-style card deck with drag physics. Swipe right to agree, left to disagree, up to skip. Stakes selector on each card.
+Beef Market is a prediction market where the assets are hot takes.
 
-**📊 Live simulation** — Odds move in real time. Volume spikes. Positions update. The ticker never sleeps.
+Swipe right if you agree. Swipe left if you don't. Pick your stake — $10, $50, $100, $500 — and let the market do the rest. Odds shift in real time as more people pile in. When the market resolves, winners get paid. Everyone else gets humbled.
 
-**🚨 Urgency signals** — Cards expiring in under an hour pulse red. Under 30 minutes gets a full CLOSING banner.
-
-**💬 Comments** — Tap any card to open the comments sheet. Filtered by CONTROVERSIAL (debate mode) or SPICY (ranked by heat). Pick your side before you can comment.
-
-**🔒 Dark pool** — Submit a private take that only your network can access via a generated room code. Black card. Gold badge. Invite only.
-
-**🤖 Claude-powered controversy gate** — The submit screen uses Claude AI to rate your take 0–100 for controversy. Lukewarm opinions are rejected. Only genuine beef makes it to market.
-
-**💼 Portfolio** — Track your open positions and resolved history. One legendary BIG WIN already in the books.
-
-**🏆 Leaderboard** — Sharpest bettors ranked by win rate. Hottest takes ranked by pool size.
+Got a take too spicy for the public? Open a dark pool. Generate a private room code, share it with your group chat, and let them put money on it. No leaderboard. No strangers. Just your people betting against each other.
 
 ---
 
-## Stack
+## Getting started
 
-- React 19 + Vite
-- Tailwind CSS v4
-- Framer Motion (card physics)
-- Claude API (`claude-haiku`) — controversy scoring
-- Zero backend. All state in memory.
-
----
-
-## Running locally
+**Requirements:** Node.js 18+, pnpm, an Anthropic API key
 
 ```bash
+git clone https://github.com/aserjam100/beef.git
+cd beef
 pnpm install
 ```
 
-Create a `.env` file:
+Create a `.env` file in the root:
 
 ```
 ANTHROPIC_API_KEY=your_key_here
@@ -65,11 +36,18 @@ ANTHROPIC_API_KEY=your_key_here
 pnpm dev
 ```
 
-Open `http://localhost:5173` — the app renders as a fake iPhone in the browser.
+Open `http://localhost:5173` in your browser.
 
 ---
 
-## The pitch
+## How it works
 
-> Everyone has opinions. Almost nobody is willing to put money on them.
-> Beef Market changes that. One swipe at a time.
+**Swipe** — Drag a card right to agree, left to disagree, up to skip. Pick your stake before you swipe.
+
+**Bet** — Money goes into a shared pool. Odds move as the crowd votes. The more conviction behind a position, the better the payout if you're right.
+
+**Submit your beef** — Write a take and Claude scores it 0–100 for controversy in real time. Too safe and it gets rejected. Hit nuclear and it goes live on the market.
+
+**Dark pool** — Toggle to private before submitting. You get a room code — share it, and only your people can join. Black card. Gold badge. Off the leaderboard.
+
+**Resolve** — Markets close and positions settle. Win and you get paid. Lose and the market reminds you.
