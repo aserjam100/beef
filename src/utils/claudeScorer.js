@@ -24,7 +24,7 @@ export async function scoreWithClaude(text) {
     return { score: 0, label: 'Too short — say something real', verdict: 'REJECTED' }
   }
 
-  const res = await fetch('/api/anthropic/v1/messages', {
+  const res = await fetch('/api/anthropic', {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({

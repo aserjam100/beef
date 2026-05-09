@@ -19,7 +19,7 @@ export default defineConfig(({ mode }) => {
             req.on('end', () => {
               const options = {
                 hostname: 'api.anthropic.com',
-                path: req.url,
+                path: '/v1/messages',
                 method: req.method,
                 headers: {
                   'content-type': 'application/json',
