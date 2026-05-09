@@ -10,10 +10,12 @@ import PortfolioScreen from './components/PortfolioScreen.jsx'
 import LeaderboardScreen from './components/LeaderboardScreen.jsx'
 import SubmitScreen from './components/SubmitScreen.jsx'
 import CommentsModal from './components/CommentsModal.jsx'
+import ResolutionScreen from './components/ResolutionScreen.jsx'
 
 function AppShell() {
   const [activeTab, setActiveTab] = useState('market')
   const [selectedTake, setSelectedTake] = useState(null)
+  const [resolution, setResolution] = useState(null)
   const { state, dispatch } = useGame()
   const stateRef = useRef(state)
   const tabRef = useRef(activeTab)
@@ -30,12 +32,33 @@ function AppShell() {
     return stop
   }, [dispatch])
 
+  useEffect(() => {
+    const win = setTimeout(() => setResolution({
+      outcome: 'WIN',
+      text: "Remote work made everyone worse at their actual jobs",
+      side: 'DISAGREE',
+      stake: 75,
+      payout: 198,
+    }), 20000)
+    const loss = setTimeout(() => setResolution({
+      outcome: 'LOSS',
+      text: "College is a scam for 80% of the people who go",
+      side: 'AGREE',
+      stake: 150,
+      payout: 0,
+    }), 45000)
+    return () => { clearTimeout(win); clearTimeout(loss) }
+  }, [])
+
   return (
     <PhoneFrame
       tabBar={<TabBar active={activeTab} onSelect={setActiveTab} />}
       overlay={
         <AnimatePresence>
-          {selectedTake && (
+          {resolution && (
+            <ResolutionScreen key={resolution.outcome} event={resolution} onDismiss={() => setResolution(null)} />
+          )}
+          {!resolution && selectedTake && (
             <CommentsModal key={selectedTake.id} take={selectedTake} onClose={() => setSelectedTake(null)} />
           )}
         </AnimatePresence>
